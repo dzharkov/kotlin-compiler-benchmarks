@@ -1,0 +1,93 @@
+/opt/java/jdk1.8.0_102/bin/java -Xmx8024m -cp /home/sufix/work/kotlin2/dist/kotlinc/lib/kotlin-compiler.jar:/home/sufix/work/kotlin2/dist/kotlinc/lib/kotlin-runtime.jar:target/benchmarks.jar org.openjdk.jmh.Main .*Vars.* -wi 4 -i 2 -f 1 -p size="10000" -prof gc
+# JMH 1.17.5 (released 18 days ago)
+# VM version: JDK 1.8.0_102, VM 25.102-b14
+# VM invoker: /opt/java/jdk1.8.0_102/jre/bin/java
+# VM options: -Xmx8024m
+# Warmup: 4 iterations, 1 s each
+# Measurement: 2 iterations, 1 s each
+# Timeout: 10 min per iteration
+# Threads: 1 thread, will synchronize iterations
+# Benchmark mode: Average time, time/op
+# Benchmark: org.jetbrains.kotlin.benchmarks.ManyVarsBenchmark.benchmark
+# Parameters: (size = 10000)
+
+# Run progress: 0.00% complete, ETA 00:00:06
+# Fork: 1 of 1
+# Warmup Iteration   1: 35444.571 ms/op
+# Warmup Iteration   2: 26839.714 ms/op
+# Warmup Iteration   3: 22001.577 ms/op
+# Warmup Iteration   4: 24221.419 ms/op
+Iteration   1: 16463.287 ms/op
+                 ·gc.alloc.rate:                   459.442 MB/sec
+                 ·gc.alloc.rate.norm:              8172374400.000 B/op
+                 ·gc.churn.PS_Eden_Space:          472.984 MB/sec
+                 ·gc.churn.PS_Eden_Space.norm:     8413249536.000 B/op
+                 ·gc.churn.PS_Old_Gen:             172.876 MB/sec
+                 ·gc.churn.PS_Old_Gen.norm:        3075056144.000 B/op
+                 ·gc.churn.PS_Survivor_Space:      105.021 MB/sec
+                 ·gc.churn.PS_Survivor_Space.norm: 1868076352.000 B/op
+                 ·gc.count:                        10.000 counts
+                 ·gc.time:                         5356.000 ms
+
+Iteration   2: 16418.832 ms/op
+                 ·gc.alloc.rate:                   460.648 MB/sec
+                 ·gc.alloc.rate.norm:              8172397376.000 B/op
+                 ·gc.churn.PS_Eden_Space:          474.224 MB/sec
+                 ·gc.churn.PS_Eden_Space.norm:     8413249536.000 B/op
+                 ·gc.churn.PS_Old_Gen:             173.571 MB/sec
+                 ·gc.churn.PS_Old_Gen.norm:        3079337928.000 B/op
+                 ·gc.churn.PS_Survivor_Space:      105.258 MB/sec
+                 ·gc.churn.PS_Survivor_Space.norm: 1867385264.000 B/op
+                 ·gc.count:                        10.000 counts
+                 ·gc.time:                         4969.000 ms
+
+
+
+Result "org.jetbrains.kotlin.benchmarks.ManyVarsBenchmark.benchmark":
+  16441.059 ms/op
+
+Secondary result "org.jetbrains.kotlin.benchmarks.ManyVarsBenchmark.benchmark:·gc.alloc.rate":
+  460.045 MB/sec
+
+Secondary result "org.jetbrains.kotlin.benchmarks.ManyVarsBenchmark.benchmark:·gc.alloc.rate.norm":
+  8172385888.000 B/op
+
+Secondary result "org.jetbrains.kotlin.benchmarks.ManyVarsBenchmark.benchmark:·gc.churn.PS_Eden_Space":
+  473.604 MB/sec
+
+Secondary result "org.jetbrains.kotlin.benchmarks.ManyVarsBenchmark.benchmark:·gc.churn.PS_Eden_Space.norm":
+  8413249536.000 B/op
+
+Secondary result "org.jetbrains.kotlin.benchmarks.ManyVarsBenchmark.benchmark:·gc.churn.PS_Old_Gen":
+  173.224 MB/sec
+
+Secondary result "org.jetbrains.kotlin.benchmarks.ManyVarsBenchmark.benchmark:·gc.churn.PS_Old_Gen.norm":
+  3077197036.000 B/op
+
+Secondary result "org.jetbrains.kotlin.benchmarks.ManyVarsBenchmark.benchmark:·gc.churn.PS_Survivor_Space":
+  105.139 MB/sec
+
+Secondary result "org.jetbrains.kotlin.benchmarks.ManyVarsBenchmark.benchmark:·gc.churn.PS_Survivor_Space.norm":
+  1867730808.000 B/op
+
+Secondary result "org.jetbrains.kotlin.benchmarks.ManyVarsBenchmark.benchmark:·gc.count":
+  10.000 counts
+
+Secondary result "org.jetbrains.kotlin.benchmarks.ManyVarsBenchmark.benchmark:·gc.time":
+  5162.500 ms
+
+
+# Run complete. Total time: 00:02:25
+
+Benchmark                                                     (size)  Mode  Cnt           Score   Error   Units
+ManyVarsBenchmark.benchmark                                    10000  avgt    2       16441.059           ms/op
+ManyVarsBenchmark.benchmark:·gc.alloc.rate                     10000  avgt    2         460.045          MB/sec
+ManyVarsBenchmark.benchmark:·gc.alloc.rate.norm                10000  avgt    2  8172385888.000            B/op
+ManyVarsBenchmark.benchmark:·gc.churn.PS_Eden_Space            10000  avgt    2         473.604          MB/sec
+ManyVarsBenchmark.benchmark:·gc.churn.PS_Eden_Space.norm       10000  avgt    2  8413249536.000            B/op
+ManyVarsBenchmark.benchmark:·gc.churn.PS_Old_Gen               10000  avgt    2         173.224          MB/sec
+ManyVarsBenchmark.benchmark:·gc.churn.PS_Old_Gen.norm          10000  avgt    2  3077197036.000            B/op
+ManyVarsBenchmark.benchmark:·gc.churn.PS_Survivor_Space        10000  avgt    2         105.139          MB/sec
+ManyVarsBenchmark.benchmark:·gc.churn.PS_Survivor_Space.norm   10000  avgt    2  1867730808.000            B/op
+ManyVarsBenchmark.benchmark:·gc.count                          10000  avgt    2          20.000          counts
+ManyVarsBenchmark.benchmark:·gc.time                           10000  avgt    2       10325.000              ms

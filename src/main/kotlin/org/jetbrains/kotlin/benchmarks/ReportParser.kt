@@ -18,9 +18,14 @@ fun parseFile(fileName: String) =
             val score = it.getJSONObject("primaryMetric").getDouble("score")
             val scoreError = it.getJSONObject("primaryMetric").getDouble("scoreError")
 
-            Report(it.getString("benchmark"), size.toString(), score, scoreError)
+            val name =
+                    it.getString("benchmark")
+                            .replace("org.jetbrains.kotlin.benchmarks.", "")
+            Report(name, size.toString(), score, scoreError)
         }
 
 fun main(args: Array<String>) {
-    parseFile("/home/sufix/work/compiler-benchmarks/reports/benchmarks.json").forEach(::println)
+    parseFile("/home/sufix/work/compiler-benchmarks/reports/benchmarks-basic-inference-15-03-2017.json").forEach {
+        println("${it.name} size=${it.parameters} score=${it.score} +-${it.deviation}")
+    }
 }

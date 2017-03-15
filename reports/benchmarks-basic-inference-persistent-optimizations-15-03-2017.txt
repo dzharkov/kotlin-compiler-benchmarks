@@ -1,0 +1,25 @@
+Benchmark                                           (size)  Mode  Cnt     Score     Error  Units
+InferenceBaselineCallsBenchmark.benchmark                1  avgt   20    16.115 ±   1.173  ms/op
+InferenceBaselineCallsBenchmark.benchmark               10  avgt   20    15.664 ±   0.498  ms/op
+InferenceBaselineCallsBenchmark.benchmark              100  avgt   20    26.662 ±   0.494  ms/op
+InferenceBaselineCallsBenchmark.benchmark             1000  avgt   20   130.669 ±   2.042  ms/op
+InferenceBaselineCallsBenchmark.benchmark             5000  avgt   20   620.869 ±  21.651  ms/op
+InferenceBaselineCallsBenchmark.benchmark            10000  avgt   20  1293.960 ±  60.693  ms/op
+InferenceExplicitArgumentsCallsBenchmark.benchmark       1  avgt   20    16.279 ±   1.167  ms/op
+InferenceExplicitArgumentsCallsBenchmark.benchmark      10  avgt   20    15.786 ±   0.326  ms/op
+InferenceExplicitArgumentsCallsBenchmark.benchmark     100  avgt   20    29.837 ±   2.316  ms/op
+InferenceExplicitArgumentsCallsBenchmark.benchmark    1000  avgt   20   167.091 ±  12.999  ms/op
+InferenceExplicitArgumentsCallsBenchmark.benchmark    5000  avgt   20   810.856 ±  63.195  ms/op
+InferenceExplicitArgumentsCallsBenchmark.benchmark   10000  avgt   20  1574.041 ±  62.908  ms/op
+InferenceFromArgumentCallsBenchmark.benchmark            1  avgt   20    15.162 ±   0.411  ms/op
+InferenceFromArgumentCallsBenchmark.benchmark           10  avgt   20    16.321 ±   0.630  ms/op
+InferenceFromArgumentCallsBenchmark.benchmark          100  avgt   20    34.558 ±   1.993  ms/op
+InferenceFromArgumentCallsBenchmark.benchmark         1000  avgt   20   181.859 ±   7.035  ms/op
+InferenceFromArgumentCallsBenchmark.benchmark         5000  avgt   20   926.420 ±  68.534  ms/op
+InferenceFromArgumentCallsBenchmark.benchmark        10000  avgt   20  1798.773 ± 111.349  ms/op
+InferenceFromReturnTypeCallsBenchmark.benchmark          1  avgt   20    17.660 ±   0.654  ms/op
+InferenceFromReturnTypeCallsBenchmark.benchmark         10  avgt   20    18.834 ±   0.576  ms/op
+InferenceFromReturnTypeCallsBenchmark.benchmark        100  avgt   20    36.708 ±   3.435  ms/op
+InferenceFromReturnTypeCallsBenchmark.benchmark       1000  avgt   20   196.375 ±   7.493  ms/op
+InferenceFromReturnTypeCallsBenchmark.benchmark       5000  avgt   20   985.299 ± 101.105  ms/op
+InferenceFromReturnTypeCallsBenchmark.benchmark      10000  avgt   20  1881.686 ±  88.961  ms/op

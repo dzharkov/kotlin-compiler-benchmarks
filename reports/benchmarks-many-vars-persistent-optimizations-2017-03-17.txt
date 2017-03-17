@@ -1,0 +1,8 @@
+ManyVarsBenchmark.benchmark       1  avgt   20    15.704 ±   1.710  ms/op
+ManyVarsBenchmark.benchmark     100  avgt   20    20.926 ±   2.496  ms/op
+ManyVarsBenchmark.benchmark    1000  avgt   20    90.355 ±   5.026  ms/op
+ManyVarsBenchmark.benchmark    3000  avgt   20   544.929 ±  30.898  ms/op
+ManyVarsBenchmark.benchmark    5000  avgt   20  1548.655 ±  41.032  ms/op
+ManyVarsBenchmark.benchmark    7000  avgt   20  2890.924 ±  57.115  ms/op
+ManyVarsBenchmark.benchmark   10000  avgt   20  5480.905 ± 180.061  ms/op
+

@@ -1,0 +1,7 @@
+ManyVarsBenchmark.benchmark size=1 score=13.829994124391074 +-0.6491182605889446
+ManyVarsBenchmark.benchmark size=100 score=15.68033033802892 +-0.23289412067528772
+ManyVarsBenchmark.benchmark size=1000 score=112.6666237677778 +-2.6292781841659227
+ManyVarsBenchmark.benchmark size=3000 score=1049.8862691749998 +-57.58490700765609
+ManyVarsBenchmark.benchmark size=5000 score=5383.925474349999 +-1195.537201993547
+ManyVarsBenchmark.benchmark size=7000 score=8586.11380295 +-1156.3471600758648
+ManyVarsBenchmark.benchmark size=10000 score=21739.0021182 +-3920.0784488812033

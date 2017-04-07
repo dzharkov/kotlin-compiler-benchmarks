@@ -1,0 +1,8 @@
+Benchmark                    (size)  Mode  Cnt     Score     Error  Units
+ManyVarsBenchmark.benchmark       1  avgt   20    14.074 ±   1.245  ms/op
+ManyVarsBenchmark.benchmark     100  avgt   20    15.715 ±   0.654  ms/op
+ManyVarsBenchmark.benchmark    1000  avgt   20    74.216 ±   5.879  ms/op
+ManyVarsBenchmark.benchmark    3000  avgt   20   436.131 ±  26.466  ms/op
+ManyVarsBenchmark.benchmark    5000  avgt   20  1034.653 ±  46.689  ms/op
+ManyVarsBenchmark.benchmark    7000  avgt   20  1772.052 ±  78.040  ms/op
+ManyVarsBenchmark.benchmark   10000  avgt   20  3290.661 ± 121.124  ms/op

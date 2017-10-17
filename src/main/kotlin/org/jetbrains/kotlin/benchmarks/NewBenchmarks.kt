@@ -52,7 +52,7 @@ open class CommonCallsBenchmark : AbstractSimpleFileBenchmark(){
             |fun foo(): Int = 1
             |
             |fun bar() {
-            |${(1..size).map { "    foo()" }.joinToString("\n")}
+            |${(1..size).joinToString("\n") { "    foo()" }}
             |}
             """.trimMargin()
 }
@@ -73,7 +73,7 @@ open class ManyVarsBenchmark : AbstractSimpleFileBenchmark(){
     override fun buildText() =
             """
             |fun bar() {
-            |${(1..size).map { "    val x$it: Int = 1" }.joinToString("\n")}
+            |${(1..size).joinToString("\n") { "    val x$it: Int = 1" }}
             |}
             """.trimMargin()
 }

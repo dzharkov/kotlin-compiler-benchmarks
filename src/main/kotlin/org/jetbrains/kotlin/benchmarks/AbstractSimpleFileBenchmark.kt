@@ -6,13 +6,9 @@ import com.intellij.openapi.vfs.CharsetToolkit
 import com.intellij.psi.PsiFileFactory
 import com.intellij.psi.impl.PsiFileFactoryImpl
 import com.intellij.testFramework.LightVirtualFile
-import org.jetbrains.kotlin.cli.jvm.compiler.CliLightClassGenerationSupport
-import org.jetbrains.kotlin.cli.jvm.compiler.EnvironmentConfigFiles
-import org.jetbrains.kotlin.cli.jvm.compiler.JvmPackagePartProvider
-import org.jetbrains.kotlin.cli.jvm.compiler.KotlinCoreEnvironment
+import org.jetbrains.kotlin.cli.jvm.compiler.*
 import org.jetbrains.kotlin.cli.jvm.config.addJvmClasspathRoot
-import org.jetbrains.kotlin.config.CommonConfigurationKeys
-import org.jetbrains.kotlin.config.CompilerConfiguration
+import org.jetbrains.kotlin.config.*
 import org.jetbrains.kotlin.context.SimpleGlobalContext
 import org.jetbrains.kotlin.context.withModule
 import org.jetbrains.kotlin.context.withProject
@@ -21,7 +17,6 @@ import org.jetbrains.kotlin.idea.KotlinLanguage
 import org.jetbrains.kotlin.name.Name
 import org.jetbrains.kotlin.platform.JvmBuiltIns
 import org.jetbrains.kotlin.psi.KtFile
-import org.jetbrains.kotlin.resolve.jvm.TopDownAnalyzerFacadeForJVM
 import org.jetbrains.kotlin.storage.ExceptionTracker
 import org.jetbrains.kotlin.storage.LockBasedStorageManager
 import org.jetbrains.kotlin.storage.StorageManager
@@ -58,6 +53,11 @@ private fun newConfiguration(): CompilerConfiguration {
     configuration.addJvmClasspathRoot(RUNTIME_JAR)
     return configuration
 }
+
+private val LANGUAGE_FEATURE_SETTINGS =
+        LanguageVersionSettingsImpl(
+                LanguageVersion.KOTLIN_1_2, ApiVersion.KOTLIN_1_2
+        )
 
 abstract class AbstractSimpleFileBenchmark {
 
@@ -96,7 +96,7 @@ abstract class AbstractSimpleFileBenchmark {
                 listOf(file),
                 CliLightClassGenerationSupport.NoScopeRecordCliBindingTrace(),
                 env.configuration,
-                { scope -> JvmPackagePartProvider(env, scope) }
+                { scope -> JvmPackagePartProvider(LANGUAGE_FEATURE_SETTINGS, scope) }
         )
 
         assert(result.shouldGenerateCode)

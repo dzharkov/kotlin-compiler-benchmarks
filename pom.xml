@@ -14,8 +14,9 @@
         <jmh.generator>default</jmh.generator>  <!-- or "asm", or "reflection" -->
         <javac.target>1.6</javac.target>
         <uberjar.name>benchmarks</uberjar.name>
-        <kotlin.version>1.1-SNAPSHOT</kotlin.version>
+        <kotlin.version>1.1.51</kotlin.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <kotlin.compiler.path>/home/sufix/work/kotlin-gkb/dist/kotlinc/lib/kotlin-compiler.jar</kotlin.compiler.path>
     </properties>
 
 
@@ -32,11 +33,11 @@
         </dependency>
 
         <dependency>
-            <groupId>LIB_NAME</groupId>
-            <artifactId>LIB_NAME</artifactId>
+            <groupId>org.jetbrains.kotlin</groupId>
+            <artifactId>kotlin-compiler-as-compile-dependency</artifactId>
             <version>1.0.0</version>
             <scope>system</scope>
-            <systemPath>/home/sufix/work/kotlin2/dist/kotlinc/lib/kotlin-compiler.jar</systemPath>
+            <systemPath>${kotlin.compiler.path}</systemPath>
         </dependency>
         <dependency>
             <groupId>org.jetbrains.kotlin</groupId>

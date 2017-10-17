@@ -25,9 +25,6 @@ import org.openjdk.jmh.annotations.Setup
 import org.openjdk.jmh.infra.Blackhole
 import java.io.File
 
-private fun File.byRelativePath(relative: String) =
-        File(this.path + File.separator + relative)
-
 private fun createFile(shortName: String, text: String, project: Project): KtFile {
     val virtualFile = object : LightVirtualFile(shortName, KotlinLanguage.INSTANCE, text) {
         override fun getPath(): String {
@@ -42,9 +39,8 @@ private fun createFile(shortName: String, text: String, project: Project): KtFil
     return factory.trySetupPsiForFile(virtualFile, KotlinLanguage.INSTANCE, true, false) as KtFile
 }
 
-private val JDK_PATH = File("/opt/java/jdk1.8.0_102/jre/lib/rt.jar")
-private val COMPILER_DIR = File("/home/sufix/work/kotlin2")
-private val RUNTIME_JAR = COMPILER_DIR.byRelativePath("dist/kotlinc/lib/kotlin-runtime.jar")
+private val JDK_PATH = File("${System.getProperty("java.home")!!}/lib/rt.jar")
+private val RUNTIME_JAR = File(System.getProperty("kotlin.runtime.path"))
 
 private fun newConfiguration(): CompilerConfiguration {
     val configuration = CompilerConfiguration()

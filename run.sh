@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e
+
 #export COMPILER_PATH=/home/sufix/work/kotlin-gkb/dist/kotlinc/lib/kotlin-compiler.jar
 #export RUNTIME_PATH=/home/sufix/work/kotlin-gkb/dist/kotlinc/lib/kotlin-runtime.jar
 #export KOTLINC_PATH=/home/sufix/work/kotlin-gkb/dist/kotlinc/bin/kotlinc

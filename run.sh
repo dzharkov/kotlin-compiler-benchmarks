@@ -13,4 +13,4 @@ $MVN_PATH clean install -Dkotlin.compiler.path=$COMPILER_PATH
 $JAVA_HOME/bin/java -Xmx8024m -Dkotlin.runtime.path=$RUNTIME_PATH \
     -cp $RUNTIME_PATH:$COMPILER_PATH:target/benchmarks.jar \
     org.openjdk.jmh.Main .*$1.*  \
-    -wi 20 -i 20 -f 1 -p size="$2"|$KOTLINC_PATH -script processResults.kts
+    -wi 20 -i 20 -f 3 -p size="$2"|$KOTLINC_PATH -script processResults.kts $1

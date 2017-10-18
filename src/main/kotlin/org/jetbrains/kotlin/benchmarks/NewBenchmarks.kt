@@ -73,7 +73,66 @@ open class ManyVarsBenchmark : AbstractSimpleFileBenchmark(){
     override fun buildText() =
             """
             |fun bar() {
+            |${(1..size).joinToString("\n") { "    var x$it: Int = 1" }}
+            |}
+            """.trimMargin()
+}
+
+
+@BenchmarkMode(Mode.AverageTime)
+@OutputTimeUnit(TimeUnit.MILLISECONDS)
+@State(Scope.Benchmark)
+open class ManyValsBenchmark : AbstractSimpleFileBenchmark(){
+
+    @Param("1", "100", "1000", "3000", "5000", "7000", "10000")
+    private var size: Int = 0
+
+    @Benchmark
+    fun benchmark(bh: Blackhole) {
+        analyzeGreenFile(bh)
+    }
+
+    override fun buildText() =
+            """
+            |fun bar() {
             |${(1..size).joinToString("\n") { "    val x$it: Int = 1" }}
+            |}
+            """.trimMargin()
+}
+
+@BenchmarkMode(Mode.AverageTime)
+@OutputTimeUnit(TimeUnit.MILLISECONDS)
+@State(Scope.Benchmark)
+open class ControlFlowOperators : AbstractSimpleFileBenchmark(){
+
+    @Param("1", "100", "1000", "3000", "5000", "7000", "10000")
+    private var size: Int = 0
+
+    @Benchmark
+    fun benchmark(bh: Blackhole) {
+        analyzeGreenFile(bh)
+    }
+
+    override fun buildText() =
+            """
+            |var isTrue = true
+            |var s = ""
+            |fun bar() {
+            |${(1..size).joinToString("\n") {
+                """
+                |var x$it: String
+                |
+                |when (s) {
+                |   "A" -> { x$it = "1" }
+                |   "B" -> { x$it = "2" }
+                |   else -> { x$it = "3" }
+                |}
+                |
+                |while (isTrue) {
+                |   x$it.hashCode()
+                |}
+                """.trimMargin()
+            }}
             |}
             """.trimMargin()
 }

@@ -13,6 +13,7 @@ import org.jetbrains.kotlin.context.SimpleGlobalContext
 import org.jetbrains.kotlin.context.withModule
 import org.jetbrains.kotlin.context.withProject
 import org.jetbrains.kotlin.descriptors.impl.ModuleDescriptorImpl
+import org.jetbrains.kotlin.diagnostics.Severity
 import org.jetbrains.kotlin.idea.KotlinLanguage
 import org.jetbrains.kotlin.name.Name
 import org.jetbrains.kotlin.platform.JvmBuiltIns
@@ -95,7 +96,7 @@ abstract class AbstractSimpleFileBenchmark {
                 { scope -> JvmPackagePartProvider(LANGUAGE_FEATURE_SETTINGS, scope) }
         )
 
-        assert(result.shouldGenerateCode)
+        assert(result.bindingContext.diagnostics.none { it.severity == Severity.ERROR })
 
         bh.consume(result.shouldGenerateCode)
     }

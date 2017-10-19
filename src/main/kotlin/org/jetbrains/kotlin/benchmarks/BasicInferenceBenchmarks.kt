@@ -20,9 +20,9 @@ open class InferenceBaselineCallsBenchmark : AbstractSimpleFileBenchmark(){
     override fun buildText() =
             """
             |fun foo(x: Int): Int = 1
-            |var x = 1
+            |fun expectsInt(x: Int) {}
             |fun bar(v: Int) {
-            |${(1..size).map { "    x = foo(v)" }.joinToString("\n")}
+            |${(1..size).map { "    expectsInt(foo(v))" }.joinToString("\n")}
             |}
             """.trimMargin()
 }
@@ -43,9 +43,9 @@ open class InferenceExplicitArgumentsCallsBenchmark : AbstractSimpleFileBenchmar
     override fun buildText() =
             """
             |fun <T> foo(x: T): Int = 1
-            |var x = 1
+            |fun expectsInt(x: Int) {}
             |fun bar(v: Int) {
-            |${(1..size).map { "    x = foo<Int>(v)" }.joinToString("\n")}
+            |${(1..size).map { "    expectsInt(foo<Int>(v))" }.joinToString("\n")}
             |}
             """.trimMargin()
 }
@@ -66,9 +66,9 @@ open class InferenceFromArgumentCallsBenchmark : AbstractSimpleFileBenchmark(){
     override fun buildText() =
             """
             |fun <T> foo(x: T): Int = 1
-            |var x = 1
+            |fun expectsInt(x: Int) {}
             |fun bar(v: Int) {
-            |${(1..size).map { "    x = foo(v)" }.joinToString("\n")}
+            |${(1..size).map { "    expectsInt(foo(v))" }.joinToString("\n")}
             |}
             """.trimMargin()
 }
@@ -89,9 +89,9 @@ open class InferenceFromReturnTypeCallsBenchmark : AbstractSimpleFileBenchmark()
     override fun buildText() =
             """
             |fun <T> foo(x: Int): T = null!!
-            |var x = 1
+            |fun expectsInt(x: Int) {}
             |fun bar(v: Int) {
-            |${(1..size).map { "    x = foo(v)" }.joinToString("\n")}
+            |${(1..size).map { "    expectsInt(foo(v))" }.joinToString("\n")}
             |}
             """.trimMargin()
 }

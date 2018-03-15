@@ -91,7 +91,7 @@ abstract class AbstractSimpleFileBenchmark {
         val result = TopDownAnalyzerFacadeForJVM.analyzeFilesWithJavaIntegration(
                 moduleContext.project,
                 listOf(file),
-                CliLightClassGenerationSupport.NoScopeRecordCliBindingTrace(),
+                NoScopeRecordCliBindingTrace(),
                 env.configuration,
                 { scope -> JvmPackagePartProvider(LANGUAGE_FEATURE_SETTINGS, scope) }
         )

@@ -4,9 +4,11 @@ while (true) {
 
     println(line)
 
-    val (size, result) =
-            ".*\\s+(\\d+)\\s+avgt\\s+\\d+\\s+(\\d+\\.\\d+).*"
+    val (isIR, size, result) =
+            ".*(true|false)\\s+(\\d+)\\s+avgt\\s+\\d+\\s+(\\d+\\.\\d+).*"
                     .toRegex().matchEntire(line)?.destructured ?: continue
 
-    println("""##teamcity[buildStatisticValue key='$bmName size=$size' value='$result']""")
+    val irPostfix = if (isIR.toBoolean()) " isIR=true" else ""
+
+    println("""##teamcity[buildStatisticValue key='$bmName size=$size${irPostfix}' value='$result']""")
 }

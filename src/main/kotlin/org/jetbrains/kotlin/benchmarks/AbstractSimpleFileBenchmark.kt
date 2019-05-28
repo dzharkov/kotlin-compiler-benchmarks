@@ -1,12 +1,20 @@
 package org.jetbrains.kotlin.benchmarks
 
 import com.intellij.openapi.Disposable
+import com.intellij.openapi.extensions.Extensions
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.CharsetToolkit
+import com.intellij.psi.PsiElementFinder
 import com.intellij.psi.PsiFileFactory
 import com.intellij.psi.impl.PsiFileFactoryImpl
+import com.intellij.psi.search.GlobalSearchScope
+import com.intellij.psi.search.ProjectScope
 import com.intellij.testFramework.LightVirtualFile
+import org.jetbrains.kotlin.analyzer.ModuleInfo
+import org.jetbrains.kotlin.asJava.finder.JavaElementFinder
 import org.jetbrains.kotlin.builtins.jvm.JvmBuiltIns
+import org.jetbrains.kotlin.cli.common.CLIConfigurationKeys
+import org.jetbrains.kotlin.cli.common.messages.MessageCollector
 import org.jetbrains.kotlin.cli.jvm.compiler.*
 import org.jetbrains.kotlin.cli.jvm.config.addJvmClasspathRoot
 import org.jetbrains.kotlin.config.*
@@ -15,14 +23,24 @@ import org.jetbrains.kotlin.context.withModule
 import org.jetbrains.kotlin.context.withProject
 import org.jetbrains.kotlin.descriptors.impl.ModuleDescriptorImpl
 import org.jetbrains.kotlin.diagnostics.Severity
+import org.jetbrains.kotlin.fir.FirSession
+import org.jetbrains.kotlin.fir.builder.RawFirBuilder
+import org.jetbrains.kotlin.fir.java.FirJavaModuleBasedSession
+import org.jetbrains.kotlin.fir.java.FirLibrarySession
+import org.jetbrains.kotlin.fir.java.FirProjectSessionProvider
+import org.jetbrains.kotlin.fir.resolve.FirProvider
+import org.jetbrains.kotlin.fir.resolve.impl.FirProviderImpl
+import org.jetbrains.kotlin.fir.resolve.transformers.FirTotalResolveTransformer
+import org.jetbrains.kotlin.fir.service
 import org.jetbrains.kotlin.idea.KotlinLanguage
 import org.jetbrains.kotlin.name.Name
 import org.jetbrains.kotlin.psi.KtFile
+import org.jetbrains.kotlin.resolve.TargetPlatform
+import org.jetbrains.kotlin.resolve.jvm.platform.JvmPlatform
 import org.jetbrains.kotlin.storage.ExceptionTracker
 import org.jetbrains.kotlin.storage.LockBasedStorageManager
 import org.jetbrains.kotlin.storage.StorageManager
-import org.openjdk.jmh.annotations.Level
-import org.openjdk.jmh.annotations.Setup
+import org.openjdk.jmh.annotations.*
 import org.openjdk.jmh.infra.Blackhole
 import java.io.File
 
@@ -43,24 +61,31 @@ private fun createFile(shortName: String, text: String, project: Project): KtFil
 private val JDK_PATH = File("${System.getProperty("java.home")!!}/lib/rt.jar")
 private val RUNTIME_JAR = File(System.getProperty("kotlin.runtime.path"))
 
+private val LANGUAGE_FEATURE_SETTINGS =
+        LanguageVersionSettingsImpl(
+                LanguageVersion.KOTLIN_1_3, ApiVersion.KOTLIN_1_3,
+                specificFeatures = mapOf()
+        )
+
 private fun newConfiguration(): CompilerConfiguration {
     val configuration = CompilerConfiguration()
     configuration.put(CommonConfigurationKeys.MODULE_NAME, "benchmark")
     configuration.addJvmClasspathRoot(JDK_PATH)
     configuration.addJvmClasspathRoot(RUNTIME_JAR)
+    configuration.put(CLIConfigurationKeys.MESSAGE_COLLECTOR_KEY, MessageCollector.NONE)
+    configuration.languageVersionSettings = LANGUAGE_FEATURE_SETTINGS
     return configuration
 }
 
-private val LANGUAGE_FEATURE_SETTINGS =
-        LanguageVersionSettingsImpl(
-                LanguageVersion.KOTLIN_1_2, ApiVersion.KOTLIN_1_2
-        )
-
+@State(Scope.Benchmark)
 abstract class AbstractSimpleFileBenchmark {
 
     private var myDisposable: Disposable = Disposable { }
     private lateinit var env: KotlinCoreEnvironment
     private lateinit var file: KtFile
+
+    @Param("true", "false")
+    private var isIR: Boolean = false
 
     @Setup(Level.Trial)
     fun setUp() {
@@ -68,6 +93,12 @@ abstract class AbstractSimpleFileBenchmark {
                 myDisposable, newConfiguration(),
                 EnvironmentConfigFiles.JVM_CONFIG_FILES
         )
+
+        if (isIR) {
+            Extensions.getArea(env.project)
+                    .getExtensionPoint(PsiElementFinder.EP_NAME)
+                    .unregisterExtension(JavaElementFinder::class.java)
+        }
 
         file = createFile(
                 "test.kt",
@@ -77,6 +108,14 @@ abstract class AbstractSimpleFileBenchmark {
     }
 
     protected fun analyzeGreenFile(bh: Blackhole) {
+        if (isIR) {
+            analyzeGreenFileIr(bh)
+        } else {
+            analyzeGreenFileFrontend(bh)
+        }
+    }
+
+    private fun analyzeGreenFileFrontend(bh: Blackhole) {
         val tracker = ExceptionTracker()
         val storageManager: StorageManager =
                 LockBasedStorageManager.createWithExceptionHandling("benchmarks", tracker)
@@ -102,5 +141,55 @@ abstract class AbstractSimpleFileBenchmark {
         bh.consume(result.shouldGenerateCode)
     }
 
+    private fun analyzeGreenFileIr(bh: Blackhole) {
+        val scope = ProjectScope.getContentScope(env.project)
+        val session = createSession(env, scope)
+        val builder = RawFirBuilder(session, stubMode = false)
+
+        val totalTransformer = FirTotalResolveTransformer()
+        val firFile = builder.buildFirFile(file).also((session.service<FirProvider>() as FirProviderImpl)::recordFile)
+
+        for (transformer in totalTransformer.transformers) {
+            transformer.transformFile(firFile, null)
+        }
+
+        bh.consume(firFile.hashCode())
+    }
+
     protected abstract fun buildText(): String
+}
+
+fun createSession(
+        environment: KotlinCoreEnvironment,
+        sourceScope: GlobalSearchScope,
+        librariesScope: GlobalSearchScope = GlobalSearchScope.notScope(sourceScope)
+): FirSession {
+    val moduleInfo = FirTestModuleInfo()
+    val project = environment.project
+    val provider = FirProjectSessionProvider(project)
+    return FirJavaModuleBasedSession(moduleInfo, provider, sourceScope).also {
+        createSessionForDependencies(provider, moduleInfo, librariesScope, environment)
+    }
+}
+
+private fun createSessionForDependencies(
+        provider: FirProjectSessionProvider,
+        moduleInfo: FirTestModuleInfo,
+        librariesScope: GlobalSearchScope,
+        environment: KotlinCoreEnvironment
+) {
+    val dependenciesInfo = FirTestModuleInfo()
+    moduleInfo.dependencies.add(dependenciesInfo)
+    FirLibrarySession.create(
+            dependenciesInfo, provider, librariesScope, environment.project,
+            environment.createPackagePartProvider(librariesScope)
+    )
+}
+
+class FirTestModuleInfo(
+        override val name: Name = Name.identifier("TestModule"),
+        val dependencies: MutableList<ModuleInfo> = mutableListOf(),
+        override val platform: TargetPlatform = JvmPlatform
+) : ModuleInfo {
+    override fun dependencies(): List<ModuleInfo> = dependencies
 }

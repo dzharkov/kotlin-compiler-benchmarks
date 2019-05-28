@@ -11,4 +11,4 @@ set -e
 $JAVA_HOME/bin/java -Xmx8024m -Dkotlin.runtime.path=$RUNTIME_PATH \
     -cp $RUNTIME_PATH:$COMPILER_PATH:target/benchmarks.jar \
     org.openjdk.jmh.Main .*$1.*  \
-    -wi 30 -i 20 -f 3 -p size="$2"|$KOTLINC_PATH -script processResults.kts $1
+    -wi 30 -i 20 -f 1 -p size="$2"|$KOTLINC_PATH -script processResults.kts $1

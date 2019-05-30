@@ -4,10 +4,19 @@ import org.openjdk.jmh.annotations.*
 import org.openjdk.jmh.infra.Blackhole
 import java.util.concurrent.TimeUnit
 
+@State(Scope.Benchmark)
+abstract class AbstractInferenceBenchmark : AbstractSimpleFileBenchmark() {
+    @Param("true", "false")
+    private var useNI: Boolean = false
+
+    override val useNewInference: Boolean
+        get() = useNI
+}
+
 @BenchmarkMode(Mode.AverageTime)
 @OutputTimeUnit(TimeUnit.MILLISECONDS)
 @State(Scope.Benchmark)
-open class InferenceBaselineCallsBenchmark : AbstractSimpleFileBenchmark(){
+open class InferenceBaselineCallsBenchmark : AbstractSimpleFileBenchmark() {
 
     @Param("1", "10", "100", "1000", "5000", "10000")
     private var size: Int = 0
@@ -30,7 +39,7 @@ open class InferenceBaselineCallsBenchmark : AbstractSimpleFileBenchmark(){
 @BenchmarkMode(Mode.AverageTime)
 @OutputTimeUnit(TimeUnit.MILLISECONDS)
 @State(Scope.Benchmark)
-open class InferenceExplicitArgumentsCallsBenchmark : AbstractSimpleFileBenchmark(){
+open class InferenceExplicitArgumentsCallsBenchmark : AbstractInferenceBenchmark() {
 
     @Param("1", "10", "100", "1000", "5000", "10000")
     private var size: Int = 0
@@ -53,7 +62,7 @@ open class InferenceExplicitArgumentsCallsBenchmark : AbstractSimpleFileBenchmar
 @BenchmarkMode(Mode.AverageTime)
 @OutputTimeUnit(TimeUnit.MILLISECONDS)
 @State(Scope.Benchmark)
-open class InferenceFromArgumentCallsBenchmark : AbstractSimpleFileBenchmark(){
+open class InferenceFromArgumentCallsBenchmark : AbstractInferenceBenchmark() {
 
     @Param("1", "10", "100", "1000", "5000", "10000")
     private var size: Int = 0
@@ -76,7 +85,7 @@ open class InferenceFromArgumentCallsBenchmark : AbstractSimpleFileBenchmark(){
 @BenchmarkMode(Mode.AverageTime)
 @OutputTimeUnit(TimeUnit.MILLISECONDS)
 @State(Scope.Benchmark)
-open class InferenceFromReturnTypeCallsBenchmark : AbstractSimpleFileBenchmark(){
+open class InferenceFromReturnTypeCallsBenchmark : AbstractInferenceBenchmark() {
 
     @Param("1", "10", "100", "1000", "5000", "10000")
     private var size: Int = 0
@@ -99,7 +108,7 @@ open class InferenceFromReturnTypeCallsBenchmark : AbstractSimpleFileBenchmark()
 @BenchmarkMode(Mode.AverageTime)
 @OutputTimeUnit(TimeUnit.MILLISECONDS)
 @State(Scope.Benchmark)
-open class InferenceForInApplicableCandidate : AbstractSimpleFileBenchmark(){
+open class InferenceForInApplicableCandidate : AbstractInferenceBenchmark() {
 
     @Param("1", "10", "100", "1000", "5000", "10000")
     private var size: Int = 1

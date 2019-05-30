@@ -4,11 +4,14 @@ while (true) {
 
     println(line)
 
-    val (isIR, size, result) =
-            ".*(true|false)\\s+(\\d+)\\s+avgt\\s+\\d+\\s+(\\d+\\.\\d+).*"
+    // Benchmark                                      (isIR)  (size)  (useNI)  Mode  Cnt   Score   Error  Units
+    // InferenceFromArgumentCallsBenchmark.benchmark   false       1    false  avgt       14.208
+    val (isIR, size, isNI, result) =
+            ".*(true|false)\\s+(\\d+)\\s+(true|false)\\s+avgt\\s+(?:\\d+)?\\s+(\\d+\\.\\d+).*"
                     .toRegex().matchEntire(line)?.destructured ?: continue
 
     val irPostfix = if (isIR.toBoolean()) " isIR=true" else ""
+    val niPostfix = if (isNI.toBoolean()) " isNI=true" else ""
 
-    println("""##teamcity[buildStatisticValue key='$bmName size=$size${irPostfix}' value='$result']""")
+    println("""##teamcity[buildStatisticValue key='$bmName size=$size${irPostfix}$niPostfix' value='$result']""")
 }

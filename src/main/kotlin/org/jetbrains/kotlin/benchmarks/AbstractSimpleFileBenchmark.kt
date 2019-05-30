@@ -34,9 +34,11 @@ import org.jetbrains.kotlin.fir.resolve.transformers.FirTotalResolveTransformer
 import org.jetbrains.kotlin.fir.service
 import org.jetbrains.kotlin.idea.KotlinLanguage
 import org.jetbrains.kotlin.name.Name
+import org.jetbrains.kotlin.platform.TargetPlatform
+import org.jetbrains.kotlin.platform.jvm.JvmPlatforms
 import org.jetbrains.kotlin.psi.KtFile
-import org.jetbrains.kotlin.resolve.TargetPlatform
-import org.jetbrains.kotlin.resolve.jvm.platform.JvmPlatform
+import org.jetbrains.kotlin.resolve.PlatformDependentAnalyzerServices
+import org.jetbrains.kotlin.resolve.jvm.platform.JvmPlatformAnalyzerServices
 import org.jetbrains.kotlin.storage.ExceptionTracker
 import org.jetbrains.kotlin.storage.LockBasedStorageManager
 import org.jetbrains.kotlin.storage.StorageManager
@@ -189,7 +191,8 @@ private fun createSessionForDependencies(
 class FirTestModuleInfo(
         override val name: Name = Name.identifier("TestModule"),
         val dependencies: MutableList<ModuleInfo> = mutableListOf(),
-        override val platform: TargetPlatform = JvmPlatform
+        override val platform: TargetPlatform = JvmPlatforms.unspecifiedJvmPlatform,
+        override val analyzerServices: PlatformDependentAnalyzerServices = JvmPlatformAnalyzerServices
 ) : ModuleInfo {
     override fun dependencies(): List<ModuleInfo> = dependencies
 }

@@ -149,7 +149,7 @@ abstract class AbstractSimpleFileBenchmark {
         val builder = RawFirBuilder(session, stubMode = false)
 
         val totalTransformer = FirTotalResolveTransformer()
-        val firFile = builder.buildFirFile(file).also((session.service<FirProvider>() as FirProviderImpl)::recordFile)
+        val firFile = builder.buildFirFile(file).also((session.getService(FirProvider::class) as FirProviderImpl)::recordFile)
 
         for (transformer in totalTransformer.transformers) {
             transformer.transformFile(firFile, null)

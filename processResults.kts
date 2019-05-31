@@ -11,7 +11,7 @@ while (true) {
                     .toRegex().matchEntire(line)?.destructured ?: continue
 
     val irPostfix = if (isIR.toBoolean()) " isIR=true" else ""
-    val niPostfix = if (isNI.toBoolean()) " isNI=true" else ""
+    val niPostfix = if (isNI.toBoolean() && !isIR.toBoolean()) " isNI=true" else ""
 
     println("""##teamcity[buildStatisticValue key='$bmName size=$size${irPostfix}$niPostfix' value='$result']""")
 }

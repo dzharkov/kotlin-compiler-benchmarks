@@ -153,7 +153,8 @@ abstract class AbstractSimpleFileBenchmark {
     }
 
     private fun analyzeGreenFileIr(bh: Blackhole) {
-        val scope = ProjectScope.getContentScope(env.project)
+        val scope = GlobalSearchScope.filesScope(env.project, listOf(file.virtualFile))
+                .uniteWith(TopDownAnalyzerFacadeForJVM.AllJavaSourcesInProjectScope(env.project))
         val session = createSession(env, scope)
         val builder = RawFirBuilder(session, stubMode = false)
 

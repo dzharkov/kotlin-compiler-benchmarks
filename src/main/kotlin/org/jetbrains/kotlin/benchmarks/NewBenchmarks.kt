@@ -68,14 +68,12 @@ open class IntArrayPlusBenchmark : AbstractSimpleFileBenchmark() {
     @Benchmark
     //@Fork(jvmArgsAppend = ["-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5005"])
     fun benchmark(bh: Blackhole) {
+        if (!isIR) error("Doesn't make sense to run it on old frontend on buildserver")
         analyzeGreenFile(bh)
     }
 
     override fun buildText() =
             """
-            |import kotlin.text.Charsets
-            |fun foo(): Int = 1
-            |
             |fun bar(x: IntArray, y: IntArray) {
             |${(1..size).joinToString("\n") { "    x + y" }}
             |}

@@ -93,7 +93,7 @@ abstract class AbstractSimpleFileBenchmark {
     private lateinit var file: KtFile
 
     @Param("true", "false")
-    private var isIR: Boolean = false
+    protected var isIR: Boolean = false
 
     protected open val useNewInference get() = isIR
 

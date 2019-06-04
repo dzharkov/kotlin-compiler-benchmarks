@@ -60,6 +60,31 @@ open class CommonCallsBenchmark : AbstractSimpleFileBenchmark(){
 @BenchmarkMode(Mode.AverageTime)
 @OutputTimeUnit(TimeUnit.MILLISECONDS)
 @State(Scope.Benchmark)
+open class IntArrayPlus : AbstractSimpleFileBenchmark() {
+
+    @Param("1", "10", "100", "1000", "3000", "5000", "7000", "10000")
+    private var size: Int = 0
+
+    @Benchmark
+    //@Fork(jvmArgsAppend = ["-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5005"])
+    fun benchmark(bh: Blackhole) {
+        analyzeGreenFile(bh)
+    }
+
+    override fun buildText() =
+            """
+            |import kotlin.text.Charsets
+            |fun foo(): Int = 1
+            |
+            |fun bar(x: IntArray, y: IntArray) {
+            |${(1..size).joinToString("\n") { "    x + y" }}
+            |}
+            """.trimMargin()
+}
+
+@BenchmarkMode(Mode.AverageTime)
+@OutputTimeUnit(TimeUnit.MILLISECONDS)
+@State(Scope.Benchmark)
 open class ManyVarsBenchmark : AbstractSimpleFileBenchmark(){
 
     @Param("1", "100", "1000", "3000", "5000", "7000", "10000")

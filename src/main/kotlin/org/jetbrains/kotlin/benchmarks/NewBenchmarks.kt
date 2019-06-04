@@ -60,7 +60,7 @@ open class CommonCallsBenchmark : AbstractSimpleFileBenchmark(){
 @BenchmarkMode(Mode.AverageTime)
 @OutputTimeUnit(TimeUnit.MILLISECONDS)
 @State(Scope.Benchmark)
-open class IntArrayPlus : AbstractSimpleFileBenchmark() {
+open class IntArrayPlusBenchmark : AbstractSimpleFileBenchmark() {
 
     @Param("1", "10", "100", "1000", "3000", "5000", "7000", "10000")
     private var size: Int = 0

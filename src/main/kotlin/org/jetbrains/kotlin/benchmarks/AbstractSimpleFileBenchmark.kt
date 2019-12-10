@@ -1,3 +1,7 @@
+/*
+ * Copyright 2010-2019 JetBrains s.r.o. and Kotlin Programming Language contributors.
+ * Use of this source code is governed by the Apache 2.0 license that can be found in the license/LICENSE.txt file.
+ */
 package org.jetbrains.kotlin.benchmarks
 
 import com.intellij.openapi.Disposable
@@ -8,7 +12,6 @@ import com.intellij.psi.PsiElementFinder
 import com.intellij.psi.PsiFileFactory
 import com.intellij.psi.impl.PsiFileFactoryImpl
 import com.intellij.psi.search.GlobalSearchScope
-import com.intellij.psi.search.ProjectScope
 import com.intellij.testFramework.LightVirtualFile
 import org.jetbrains.kotlin.analyzer.ModuleInfo
 import org.jetbrains.kotlin.asJava.finder.JavaElementFinder
@@ -25,10 +28,11 @@ import org.jetbrains.kotlin.descriptors.impl.ModuleDescriptorImpl
 import org.jetbrains.kotlin.diagnostics.Severity
 import org.jetbrains.kotlin.fir.FirSession
 import org.jetbrains.kotlin.fir.builder.RawFirBuilder
+import org.jetbrains.kotlin.fir.java.FirJavaElementFinder
 import org.jetbrains.kotlin.fir.java.FirJavaModuleBasedSession
 import org.jetbrains.kotlin.fir.java.FirLibrarySession
 import org.jetbrains.kotlin.fir.java.FirProjectSessionProvider
-import org.jetbrains.kotlin.fir.resolve.FirProvider
+import org.jetbrains.kotlin.fir.resolve.firProvider
 import org.jetbrains.kotlin.fir.resolve.impl.FirProviderImpl
 import org.jetbrains.kotlin.fir.resolve.transformers.FirTotalResolveTransformer
 import org.jetbrains.kotlin.idea.KotlinLanguage
@@ -49,7 +53,7 @@ private fun createFile(shortName: String, text: String, project: Project): KtFil
     val virtualFile = object : LightVirtualFile(shortName, KotlinLanguage.INSTANCE, text) {
         override fun getPath(): String {
             //TODO: patch LightVirtualFile
-            return "/" + name
+            return "/$name"
         }
     }
 
@@ -60,7 +64,7 @@ private fun createFile(shortName: String, text: String, project: Project): KtFil
 }
 
 private val JDK_PATH = File("${System.getProperty("java.home")!!}/lib/rt.jar")
-private val RUNTIME_JAR = File(System.getProperty("kotlin.runtime.path"))
+private val RUNTIME_JAR = File(System.getProperty("kotlin.runtime.path") ?: "dist/kotlinc/lib/kotlin-runtime.jar")
 
 private val LANGUAGE_FEATURE_SETTINGS =
         LanguageVersionSettingsImpl(
@@ -101,7 +105,8 @@ abstract class AbstractSimpleFileBenchmark {
     fun setUp() {
         if (isIR && !useNewInference) error("Invalid configuration")
         env = KotlinCoreEnvironment.createForTests(
-                myDisposable, newConfiguration(useNewInference),
+                myDisposable,
+                newConfiguration(useNewInference),
                 EnvironmentConfigFiles.JVM_CONFIG_FILES
         )
 
@@ -156,10 +161,15 @@ abstract class AbstractSimpleFileBenchmark {
         val scope = GlobalSearchScope.filesScope(env.project, listOf(file.virtualFile))
                 .uniteWith(TopDownAnalyzerFacadeForJVM.AllJavaSourcesInProjectScope(env.project))
         val session = createSession(env, scope)
+
+        Extensions.getArea(env.project)
+                .getExtensionPoint(PsiElementFinder.EP_NAME)
+                .unregisterExtension(FirJavaElementFinder::class.java)
+
         val builder = RawFirBuilder(session, stubMode = false)
 
         val totalTransformer = FirTotalResolveTransformer()
-        val firFile = builder.buildFirFile(file).also((session.getService(FirProvider::class) as FirProviderImpl)::recordFile)
+        val firFile = builder.buildFirFile(file).also((session.firProvider as FirProviderImpl)::recordFile)
 
         for (transformer in totalTransformer.transformers) {
             transformer.transformFile(firFile, null)
